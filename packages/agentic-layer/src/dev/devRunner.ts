@@ -4,7 +4,7 @@ async function run() {
   const orchestrator = new WorkflowOrchestrator();
 
   const result = await orchestrator.run(
-    "Analyze my DigitalOcean infrastructure for cost inefficiencies",
+    "Find ways to reduce my DigitalOcean infrastructure costs",
   );
 
   console.log("\nFinal Result:\n");

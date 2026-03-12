@@ -31,10 +31,12 @@ export class WorkflowOrchestrator {
     };
 
     for (const step of plan.steps as AgentKey[]) {
+      console.log(`Running agent: ${step}`);
+
       const agent = this.agents[step];
 
       if (!agent) {
-        console.warn("Unknown agent step:", step);
+        console.warn("Unknown agent:", step);
         continue;
       }
 
