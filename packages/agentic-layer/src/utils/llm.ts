@@ -1,4 +1,4 @@
-import { gradient, MODEL } from "../config/gradientClient";
+import { gradient, MODEL } from "../config/models.config";
 
 
 export async function generateJSON(systemPrompt: string, userPrompt: string) {
