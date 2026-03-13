@@ -1,73 +1,56 @@
-import axios from "axios"
-import { FinOpsState } from "../state/finops.state"
+import axios from "axios";
+import { logStep } from "../utils/logger";
+import "dotenv/config"
 
-const DO_API = "https://api.digitalocean.com/v2"
+const DO_API = "https://api.digitalocean.com/v2";
 
 const headers = {
   Authorization: `Bearer ${process.env.DO_API_TOKEN}`,
-  "Content-Type": "application/json"
-}
+  "Content-Type": "application/json",
+};
 
-/**
- * Fetch droplets
- */
 async function fetchDroplets() {
-  const res = await axios.get(`${DO_API}/droplets`, { headers })
-  return res.data.droplets || []
+  const res = await axios.get(`${DO_API}/droplets`, { headers });
+  return res.data.droplets || [];
 }
 
-/**
- * Fetch volumes
- */
 async function fetchVolumes() {
-  const res = await axios.get(`${DO_API}/volumes`, { headers })
-  return res.data.volumes || []
+  const res = await axios.get(`${DO_API}/volumes`, { headers });
+  return res.data.volumes || [];
 }
 
-/**
- * Fetch load balancers
- */
 async function fetchLoadBalancers() {
-  const res = await axios.get(`${DO_API}/load_balancers`, { headers })
-  return res.data.load_balancers || []
+  const res = await axios.get(`${DO_API}/load_balancers`, { headers });
+  return res.data.load_balancers || [];
 }
 
-/**
- * Infrastructure Agent
- * Fetch all infrastructure resources
- */
-export async function infrastructureAgent(
-  state: FinOpsState
-): Promise<FinOpsState> {
+export async function infrastructureAgent(state: any) {
+  logStep("InfrastructureAgent");
 
   try {
-
-    const [droplets, volumes, loadBalancers] = await Promise.all([
+    const [droplets, volumes, loadBalancers] = await Promise.allSettled([
       fetchDroplets(),
       fetchVolumes(),
-      fetchLoadBalancers()
-    ])
+      fetchLoadBalancers(),
+    ]);
 
     return {
-      ...state,
       infrastructure: {
-        droplets,
-        volumes,
-        loadBalancers
-      }
-    }
-
+        droplets: droplets.status === "fulfilled" ? droplets.value : [],
+        volumes: volumes.status === "fulfilled" ? volumes.value : [],
+        loadBalancers:
+          loadBalancers.status === "fulfilled" ? loadBalancers.value : [],
+      },
+    };
   } catch (error) {
-
-    console.error("Infrastructure Agent Error:", error)
+    console.error("Infrastructure Agent Error:", error);
 
     return {
-      ...state,
       infrastructure: {
         droplets: [],
         volumes: [],
-        loadBalancers: []
-      }
-    }
+        loadBalancers: [],
+      },
+    };
   }
 }

@@ -1,11 +1,11 @@
-import { runCopilotWorkflow } from "../graph/workflows/copilot.workflow";
+import { buildCopilotWorkflow } from "../graph/workflows/copilot.workflow";
 
 async function run() {
-  const result = await runCopilotWorkflow({
-    query: "How can I reduce my droplet costs?",
-  });
+  const graph = buildCopilotWorkflow();
 
-  console.log("\nRESULT:\n");
+  const result = await graph.invoke({
+    query: "how many droplets are running ?",
+  });
 
   console.log(result);
 }

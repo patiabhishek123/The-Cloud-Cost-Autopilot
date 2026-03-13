@@ -1,16 +1,13 @@
-import { infrastructureWorkflow } from "./infrastructure.workflow"
-import { monitoringWorkflow } from "./monitoring.workflow"
-import { FinOpsState } from "../../state/finops.state"
+import { infrastructureWorkflow } from "./infrastructure.workflow";
+import { monitoringWorkflow } from "./monitoring.workflow";
+import { FinOpsState } from "../../state/finops.state";
 
 export async function dashboardWorkflow(
-  state: FinOpsState
+  state: FinOpsState,
 ): Promise<FinOpsState> {
+  const infraState = await infrastructureWorkflow(state);
 
-  let newState = state
+  const monitoringState = await monitoringWorkflow(infraState);
 
-  newState = await infrastructureWorkflow(newState)
-
-  newState = await monitoringWorkflow(newState)
-
-  return newState
+  return monitoringState;
 }

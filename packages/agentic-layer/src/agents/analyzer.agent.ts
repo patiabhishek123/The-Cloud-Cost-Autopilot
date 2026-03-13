@@ -1,29 +1,23 @@
-import { FinOpsState } from "../state/finops.state"
+import { logStep } from "../utils/logger";
 
-export async function analyzerAgent(
-  state: FinOpsState
-): Promise<FinOpsState> {
+export async function analyzerAgent(state: any) {
+  logStep("AnalyzerAgent");
 
-  const droplets = state.infrastructure?.droplets || []
+  const metrics = state.metrics || [];
 
-  const issues: any[] = []
+  const issues: any[] = [];
 
-  for (const droplet of droplets) {
-
-    const cpuUsage = Math.floor(Math.random() * 60)
-
-    if (cpuUsage < 10) {
-
+  for (const m of metrics) {
+    if (m.cpuUsage < 10) {
       issues.push({
-        resource: droplet.name,
+        resource: m.name || m.id,
         issue: "Low CPU utilization",
-        recommendation: "Resize or shut down this droplet"
-      })
+        recommendation: "Resize or shut down this droplet",
+      });
     }
   }
 
   return {
-    ...state,
-    analysis: issues
-  }
+    analysis: issues,
+  };
 }

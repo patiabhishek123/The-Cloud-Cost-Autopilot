@@ -1,9 +1,10 @@
 import OpenAI from "openai"
+import "dotenv/config"
 
 export const llm = new OpenAI({
-  apiKey: process.env.DO_API_KEY,
-  baseURL: "https://inference.do-ai.run/v1"
-})
+  apiKey: process.env.GRADIENT_API_KEY,
+  baseURL: "https://inference.do-ai.run/v1",
+});
 
 export async function generateText(prompt: string) {
 
@@ -14,5 +15,5 @@ export async function generateText(prompt: string) {
     ]
   })
 
-  return completion.choices[0].message.content
+  return completion.choices[0].message.content ?? ""
 }

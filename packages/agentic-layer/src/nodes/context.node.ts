@@ -1,36 +1,32 @@
 // prepare the structure for the final llm response ( copilot page)
-
-import { FinOpsState } from "../state/finops.state";
 import { logStep } from "../utils/logger";
 
-export async function ContextNode(state: FinOpsState): Promise<FinOpsState> {
+export async function ContextNode(state: any) {
   logStep("ContextNode");
 
-  const infrastructure = JSON.stringify(state.infrastructure ?? {}, null, 2);
-  const metrics = JSON.stringify(state.metrics ?? {}, null, 2);
-  const analysis = JSON.stringify(state.analysis ?? {}, null, 2);
-  const optimizations = JSON.stringify(state.optimizations ?? {}, null, 2);
+  const infra = state.infrastructure || {};
+  const metrics = state.metrics?.slice(0, 5) || [];
+  const analysis = state.analysis?.slice(0, 5) || [];
+  const optimizations = state.optimizations?.slice(0, 5) || [];
 
-  const promptContext = `
+  const context = `
 You are a FinOps cloud optimization assistant.
 
 Infrastructure Snapshot:
-${infrastructure}
+${JSON.stringify(infra, null, 2)}
 
 Usage Metrics:
-${metrics}
+${metrics.length ? JSON.stringify(metrics, null, 2) : "No metrics available"}
 
 Detected Inefficiencies:
-${analysis}
+${analysis.length ? JSON.stringify(analysis, null, 2) : "None detected"}
 
 Optimization Strategies:
-${optimizations}
+${optimizations.length ? JSON.stringify(optimizations, null, 2) : "No optimizations identified"}
 
 Reference Documentation:
-${state.ragContext ?? ""}
+${state.ragContext || "No reference context available"}
 `;
 
-  state.promptContext = promptContext;
-
-  return state;
+  return { promptContext: context };
 }

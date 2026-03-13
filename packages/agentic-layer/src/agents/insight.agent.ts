@@ -1,26 +1,23 @@
-import { FinOpsState } from "../state/finops.state"
+import { logStep } from "../utils/logger";
 
-export async function insightAgent(
-  state: FinOpsState
-): Promise<FinOpsState> {
+export async function insightAgent(state: any) {
+  logStep("InsightAgent");
 
-  const analysis = state.analysis || []
+  const analysis = state.analysis || [];
 
-  let insights = ""
+  let insights = "";
 
   for (const item of analysis) {
-
-    insights += `Resource ${item.resource} has ${item.issue}. `
-    insights += `Recommendation: ${item.recommendation}. `
-    insights += `This could reduce unnecessary cloud costs.\n\n`
+    insights += `Resource ${item.resource} has ${item.issue}. `;
+    insights += `Recommendation: ${item.recommendation}. `;
+    insights += `This could reduce unnecessary cloud costs.\n\n`;
   }
 
   if (!insights) {
-    insights = "No major inefficiencies detected in infrastructure."
+    insights = "No major inefficiencies detected in infrastructure.";
   }
 
   return {
-    ...state,
-    insights
-  }
+    insights,
+  };
 }

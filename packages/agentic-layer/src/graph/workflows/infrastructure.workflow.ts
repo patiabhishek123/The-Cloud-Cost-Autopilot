@@ -1,16 +1,13 @@
-import { infrastructureAgent } from "../../agents/infrastructure.agent"
-import { metricsAgent } from "../../agents/metric.agent"
-import { FinOpsState } from "../../state/finops.state"
+import { infrastructureAgent } from "../../agents/infrastructure.agent";
+import { metricsAgent } from "../../agents/metrics.agent";
+import { FinOpsState } from "../../state/finops.state";
 
 export async function infrastructureWorkflow(
-  state: FinOpsState
+  state: FinOpsState,
 ): Promise<FinOpsState> {
+  const infraState = await infrastructureAgent(state);
 
-  let newState = state
+  const metricsState = await metricsAgent(infraState);
 
-  newState = await infrastructureAgent(newState)
-
-  newState = await metricsAgent(newState)
-
-  return newState
+  return metricsState;
 }

@@ -8,13 +8,14 @@ export interface FinOpsState {
     volumes?: any[];
     loadBalancers?: any[];
   };
+  //tools
+  selectedTools?: string[];
 
   // computed metrics
   metrics?: any;
 
   // inefficiency detection
   analysis?: any;
-
   // optimization strategies
   optimizations?: any;
 
