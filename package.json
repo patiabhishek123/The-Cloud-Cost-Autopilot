@@ -10,6 +10,7 @@
     "agent": "tsx packages/agentic-layer/src/dev/devRunner.ts"
   },
   "devDependencies": {
+    "@types/node": "^25.5.0",
     "prettier": "^3.7.4",
     "tsx": "^4.21.0",
     "turbo": "^2.8.15",
@@ -26,6 +27,7 @@
   "dependencies": {
     "@langchain/core": "^1.1.32",
     "@langchain/langgraph": "^1.2.2",
+    "axios": "^1.13.6",
     "dotenv": "^17.3.1",
     "langchain": "^1.2.32",
     "openai": "^6.27.0",
