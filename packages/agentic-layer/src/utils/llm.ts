@@ -1,23 +1,18 @@
-import { gradient, MODEL } from "../config/models.config";
+import OpenAI from "openai"
 
+export const llm = new OpenAI({
+  apiKey: process.env.DO_API_KEY,
+  baseURL: "https://inference.do-ai.run/v1"
+})
 
-export async function generateJSON(systemPrompt: string, userPrompt: string) {
-  try {
-    const response = await gradient.chat.completions.create({
-      model: MODEL,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-      response_format: { type: "json_object" },
-    });
+export async function generateText(prompt: string) {
 
-    const text = response.choices[0].message.content || "{}";
+  const completion = await llm.chat.completions.create({
+    model: "alibaba-qwen3-32b",
+    messages: [
+      { role: "user", content: prompt }
+    ]
+  })
 
-    return JSON.parse(text);
-  } catch (err) {
-    console.error("LLM Error:", err);
-
-    return {};
-  }
+  return completion.choices[0].message.content
 }

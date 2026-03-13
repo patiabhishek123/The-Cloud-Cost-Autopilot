@@ -1,7 +1,9 @@
-import { WorkflowState } from "../memory/workflowState";
+// common interface used by agents
 
-export interface Agent {
-  name: string;
+import { FinOpsState } from "../state/finops.state";
 
-  run(state: WorkflowState): Promise<WorkflowState>;
-}
+export type AgentNode = (
+  state: FinOpsState
+)=> Promise<FinOpsState>
+
+

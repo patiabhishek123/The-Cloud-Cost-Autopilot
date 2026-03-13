@@ -1,5 +1,7 @@
-import pino from "pino";
+export function logAgent(agent: string) {
+  console.log(`⚙️ Agent running: ${agent}`);
+}
 
-export const logger = pino({
-  level: "info",
-});
+export function logStep(step: string) {
+  console.log(`➡️ ${step}`);
+}

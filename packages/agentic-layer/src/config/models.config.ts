@@ -1,13 +1,5 @@
-import OpenAI from "openai";
-import dotenv from "dotenv";
+export const MODELS = {
+  DEFAULT: "alibaba-qwen3-32b",
 
-dotenv.config();
-
-export const gradient = new OpenAI({
-  apiKey: process.env.GRADIENT_API_KEY!,
-  baseURL: "https://inference.do-ai.run/v1",
-  timeout: 30000,
-  maxRetries: 3,
-});
-
-export const MODEL = process.env.GRADIENT_MODEL || "alibaba-qwen3-32b";
+  EMBEDDING: "text-embedding-3-small",
+};

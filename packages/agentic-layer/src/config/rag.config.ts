@@ -1,7 +1,7 @@
-export const MODEL_CONFIG = {
-  DEFAULT_MODEL: "openai-gpt-oss-20b",
+export const RAG_CONFIG = {
+  CHUNK_SIZE: 800,
 
-  TEMPERATURE: 0.2,
+  CHUNK_OVERLAP: 200,
 
-  MAX_TOKENS: 2000,
+  TOP_K_RESULTS: 4,
 };
