@@ -5,9 +5,17 @@ import { FinOpsState } from "../../state/finops.state";
 export async function dashboardWorkflow(
   state: FinOpsState,
 ): Promise<FinOpsState> {
+
   const infraState = await infrastructureWorkflow(state);
 
-  const monitoringState = await monitoringWorkflow(infraState);
+  const monitoringState = await monitoringWorkflow({
+    ...state,
+    ...infraState,
+  });
 
-  return monitoringState;
+  return {
+    ...state,
+    ...infraState,
+    ...monitoringState,
+  };
 }

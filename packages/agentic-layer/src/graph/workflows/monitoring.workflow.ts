@@ -5,9 +5,17 @@ import { FinOpsState } from "../../state/finops.state";
 export async function monitoringWorkflow(
   state: FinOpsState,
 ): Promise<FinOpsState> {
+
   const analyzedState = await analyzerAgent(state);
 
-  const insightState = await insightAgent(analyzedState);
+  const insightState = await insightAgent({
+    ...state,
+    ...analyzedState,
+  });
 
-  return insightState;
+  return {
+    ...state,
+    ...analyzedState,
+    ...insightState,
+  };
 }

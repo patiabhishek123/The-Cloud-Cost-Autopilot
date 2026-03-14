@@ -5,9 +5,17 @@ import { FinOpsState } from "../../state/finops.state";
 export async function infrastructureWorkflow(
   state: FinOpsState,
 ): Promise<FinOpsState> {
+
   const infraState = await infrastructureAgent(state);
 
-  const metricsState = await metricsAgent(infraState);
+  const metricsState = await metricsAgent({
+    ...state,
+    ...infraState,
+  });
 
-  return metricsState;
+  return {
+    ...state,
+    ...infraState,
+    ...metricsState,
+  };
 }
