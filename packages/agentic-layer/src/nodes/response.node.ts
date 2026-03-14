@@ -1,22 +1,26 @@
-import { FinOpsState } from "../state/finops.state";
-import { generateText } from "../utils/llm";
+import { streamText } from "../utils/llm";
 import { logStep } from "../utils/logger";
+import { FinOpsState } from "../state/finops.state";
+import { copilotPrompt } from "../prompts/copilot.prompt";
 
-export async function ResponseNode(state: FinOpsState): Promise<FinOpsState> {
+export async function ResponseNode(
+  state: FinOpsState,
+): Promise<Partial<FinOpsState>> {
   logStep("ResponseNode");
 
-  const prompt = `
-User Question:
-${state.query}
+  const prompt = copilotPrompt(state);
 
-${state.promptContext}
+  const stream = await streamText(prompt);
 
-Provide a clear and helpful answer to the user.
-`;
+  let finalText = "";
 
-  const response = await generateText(prompt);
+  for await (const chunk of stream) {
+    const token = chunk.choices?.[0]?.delta?.content || "";
+    process.stdout.write(token); // streaming to terminal
+    finalText += token;
+  }
 
-  state.response = response ?? "";
-
-  return state;
+  return {
+    response: finalText,
+  };
 }

@@ -4,7 +4,7 @@ async function run() {
   const graph = buildCopilotWorkflow();
 
   const result = await graph.invoke({
-    query: "how many droplets are running ?",
+    query: "give me the overview of my current state of the system ",
   });
 
   console.log(result);
