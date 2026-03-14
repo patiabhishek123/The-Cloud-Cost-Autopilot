@@ -3,7 +3,18 @@ import { logStep } from "../utils/logger";
 export async function optimizerAgent(state: any) {
   logStep("OptimizerAgent");
 
-  const issues = state.analysis || [];
+  // Merge results from parallel analyzers
+  const issues = [
+    ...(state.cpuAnalysis || []),
+    ...(state.memoryAnalysis || []),
+  ];
+
+  // Guard: if no issues found
+  if (!issues.length) {
+    return {
+      optimizations: [],
+    };
+  }
 
   const optimizations: any[] = [];
 
@@ -14,7 +25,12 @@ export async function optimizerAgent(state: any) {
     switch (issue.issue) {
       case "Low CPU utilization":
         suggestion = "Resize droplet to a smaller plan or shut it down";
-        estimatedSavings = "~20-40% cost reduction";
+        estimatedSavings = "~20–40% cost reduction";
+        break;
+
+      case "High memory usage":
+        suggestion = "Upgrade droplet size to handle memory load";
+        estimatedSavings = "Prevents performance bottlenecks";
         break;
 
       default:

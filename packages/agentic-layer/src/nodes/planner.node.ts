@@ -22,7 +22,15 @@ Return JSON array of tools needed.
 
   const plan = await generateText(prompt);
 
+  let selectedTools: string[] = [];
+
+  try {
+    selectedTools = JSON.parse(plan);
+  } catch {
+    selectedTools = ["infrastructure", "metrics", "analyzer"];
+  }
+
   return {
-    analysis: plan,
+    selectedTools,
   };
 }

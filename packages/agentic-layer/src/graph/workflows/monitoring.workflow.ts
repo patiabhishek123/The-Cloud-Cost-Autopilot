@@ -1,21 +1,19 @@
-import { analyzerAgent } from "../../agents/analyzer.agent";
-import { insightAgent } from "../../agents/insight.agent";
+import { metricsAgent } from "../../agents/metrics.agent";
+import { logStep } from "../../utils/logger";
 import { FinOpsState } from "../../state/finops.state";
 
 export async function monitoringWorkflow(
   state: FinOpsState,
 ): Promise<FinOpsState> {
 
-  const analyzedState = await analyzerAgent(state);
+  const metricsState = await metricsAgent(state);
 
-  const insightState = await insightAgent({
-    ...state,
-    ...analyzedState,
-  });
+  logStep("MonitoringLogs");
+
+  console.log("Monitoring metrics:", metricsState.metrics);
 
   return {
     ...state,
-    ...analyzedState,
-    ...insightState,
+    ...metricsState,
   };
 }
