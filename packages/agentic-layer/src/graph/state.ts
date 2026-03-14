@@ -3,7 +3,7 @@ import * as z from "zod";
 
 export const State = new StateSchema({
   query: z.string().optional(),
-
+  retrievalQuery: z.string().optional(),
   infrastructure: z.any().optional(),
 
   metrics: z.any().optional(),

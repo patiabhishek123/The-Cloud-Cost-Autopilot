@@ -3,14 +3,17 @@ dotenv.config();
 
 import { buildCopilotWorkflow } from "../graph/workflows/copilot.workflow";
 
+const query = " How to Add SSH Keys to New or Existing Droplets??";
+
 async function run() {
   const graph = buildCopilotWorkflow();
 
   const result = await graph.invoke({
-    query: "give me the overview of my current state of the system",
+    query: query,
+
   });
 
-  console.log(result);
+  console.log(result.response);
 }
 
 run();

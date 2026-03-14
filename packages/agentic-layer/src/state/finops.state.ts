@@ -2,6 +2,8 @@ export interface FinOpsState {
   // user query
   query?: string;
 
+  retrievalQuery?:string
+  
   // infrastructure snapshot
   infrastructure?: {
     droplets?: any[];

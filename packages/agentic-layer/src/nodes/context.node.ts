@@ -36,7 +36,7 @@ ${optimizations.length ? JSON.stringify(optimizations, null, 2) : "No optimizati
 
 --------------------------------
 
-DigitalOcean Documentation:
+Reference DigitalOcean Documentation:
 ${state.ragContext || "No reference context available"}
 
 `;

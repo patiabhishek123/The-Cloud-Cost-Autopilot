@@ -6,7 +6,7 @@ import { PlannerNode } from "../../nodes/planner.node";
 import { RouterNode } from "../../nodes/router.node";
 import { ContextNode } from "../../nodes/context.node";
 import { ResponseNode } from "../../nodes/response.node";
-
+import { QueryRewriteNode } from "../../nodes/queryRewriter.node";
 import { RAGAgent } from "../../agents/rag.agent";
 import { infrastructureAgent } from "../../agents/infrastructure.agent";
 import { metricsAgent } from "../../agents/metrics.agent";
@@ -19,7 +19,7 @@ export function buildCopilotWorkflow() {
   graph
     .addNode("planner", PlannerNode)
     .addNode("router", RouterNode)
-
+    .addNode("queryRewriter", QueryRewriteNode)
     .addNode("ragAgent", RAGAgent)
 
     .addNode("infraAgent", infrastructureAgent)
@@ -31,8 +31,8 @@ export function buildCopilotWorkflow() {
     .addNode("responseNode", ResponseNode)
 
     .addEdge(START, "planner")
-    .addEdge("planner", "router")
-
+    .addEdge("planner", "queryRewriter")
+    .addEdge("queryRewriter","router")
     .addEdge("router", "ragAgent")
 
     .addEdge("ragAgent", "infraAgent")
