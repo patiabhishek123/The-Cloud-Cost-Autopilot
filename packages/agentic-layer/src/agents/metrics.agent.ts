@@ -8,11 +8,12 @@ export async function metricsAgent(state: any) {
   const metrics = droplets.map((droplet: any) => ({
     id: droplet.id,
     name: droplet.name,
-    cpuUsage: Math.floor(Math.random() * 60),
-    memoryUsage: Math.floor(Math.random() * 70),
+
+    cpuUsage: droplet.vcpus === 1 ? 8 : 35,
+    memoryUsage: droplet.memory < 2048 ? 20 : 55,
   }));
 
   return {
-    metrics,
+    metrics
   };
 }

@@ -10,7 +10,8 @@ import { QueryRewriteNode } from "../../nodes/queryRewriter.node";
 import { RAGAgent } from "../../agents/rag.agent";
 import { infrastructureAgent } from "../../agents/infrastructure.agent";
 import { metricsAgent } from "../../agents/metrics.agent";
-import { analyzerAgent } from "../../agents/analyzer.agent";
+import { cpuAnalyzerAgent } from "../../agents/cpuAnalyzer.agent";
+import { memoryAnalyzerAgent } from "../../agents/memoryAnalyzer.agent";
 import { optimizerAgent } from "../../agents/optimizer.agent";
 
 export function buildCopilotWorkflow() {
@@ -24,7 +25,11 @@ export function buildCopilotWorkflow() {
 
     .addNode("infraAgent", infrastructureAgent)
     .addNode("metricsAgent", metricsAgent)
-    .addNode("analysisAgent", analyzerAgent)
+
+    // parallel analyzers
+    .addNode("cpuAnalyzerAgent", cpuAnalyzerAgent)
+    .addNode("memoryAnalyzerAgent", memoryAnalyzerAgent)
+
     .addNode("optimizerAgent", optimizerAgent)
 
     .addNode("contextNode", ContextNode)
@@ -35,17 +40,21 @@ export function buildCopilotWorkflow() {
     .addEdge("queryRewriter","router")
     .addEdge("router", "ragAgent")
 
+    // infra + metrics
     .addEdge("ragAgent", "infraAgent")
-    .addEdge("ragAgent", "metricsAgent")
-    .addEdge("ragAgent", "analysisAgent")
-    .addEdge("ragAgent", "optimizerAgent")
+    .addEdge("infraAgent", "metricsAgent")
 
-    .addEdge("infraAgent", "contextNode")
-    .addEdge("metricsAgent", "contextNode")
-    .addEdge("analysisAgent", "contextNode")
+    // parallel analyzers
+    .addEdge("metricsAgent", "cpuAnalyzerAgent")
+    .addEdge("metricsAgent", "memoryAnalyzerAgent")
+
+    // both feed optimizer
+    .addEdge("cpuAnalyzerAgent", "optimizerAgent")
+    .addEdge("memoryAnalyzerAgent", "optimizerAgent")
+
     .addEdge("optimizerAgent", "contextNode")
-
     .addEdge("contextNode", "responseNode")
+
     .addEdge("responseNode", END);
 
   return graph.compile();

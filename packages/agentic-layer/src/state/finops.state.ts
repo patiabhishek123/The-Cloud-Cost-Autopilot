@@ -2,39 +2,37 @@ export interface FinOpsState {
   // user query
   query?: string;
 
-  retrievalQuery?:string
-  
   // infrastructure snapshot
   infrastructure?: {
     droplets?: any[];
     volumes?: any[];
     loadBalancers?: any[];
-  };
-  //tools
-  selectedTools?: string[];
+  }>(),
 
-  // computed metrics
-  metrics?: any;
+  metrics: Annotation<any[]>(),
 
-  // inefficiency detection
-  analysis?: any;
-  // optimization strategies
-  optimizations?: any;
+  // 🔧 Merge multiple writes to analysis
+  analysis: Annotation<any[]>({
+    reducer: (left, right) => {
+      const l = left ?? [];
+      const r = right ?? [];
+      return [...l, ...r];
+    },
+    default: () => [],
+  }),
 
-  // formatted UI recommendations
-  recommendations?: any;
+  // (optional) same idea for optimizations
+  optimizations: Annotation<any[]>({
+    reducer: (left, right) => {
+      const l = left ?? [];
+      const r = right ?? [];
+      return [...l, ...r];
+    },
+    default: () => [],
+  }),
 
-  // RAG retrieved context
-  ragContext?: string;
-
-  // final compiled prompt context
-  promptContext?: string;
-
-  // AI generated insights
-  insights?: string;
-
-  // final copilot response
-  response?: string;
-}
-
-export const initialState: FinOpsState = {};
+  ragContext: Annotation<string>(),
+  promptContext: Annotation<string>(),
+  insights: Annotation<string>(),
+  response: Annotation<string>(),
+});
