@@ -19,6 +19,8 @@ Focus on:
 - optimization
 - cloud resource management
 
+note: Return ONLY the query text.
+
 User question:
 ${state.query}
 

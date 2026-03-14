@@ -19,7 +19,7 @@ export async function ResponseNode(
     process.stdout.write(token); // streaming to terminal
     finalText += token;
   }
-
+  
   return {
     response: finalText,
   };

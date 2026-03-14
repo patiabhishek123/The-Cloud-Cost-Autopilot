@@ -1,9 +1,14 @@
-export interface FinOpsState {
-  // user query
-  query?: string;
+import { Annotation } from "@langchain/langgraph";
 
-  // infrastructure snapshot
-  infrastructure?: {
+export const FinOpsStateAnnotation = Annotation.Root({
+  query: Annotation<string>(),
+  retrievalQuery: Annotation<string>(),
+
+  selectedTools: Annotation<string[]>({
+    reducer: (left, right) => right ?? left ?? [],
+    default: () => [],
+  }),
+  infrastructure: Annotation<{
     droplets?: any[];
     volumes?: any[];
     loadBalancers?: any[];
@@ -11,23 +16,13 @@ export interface FinOpsState {
 
   metrics: Annotation<any[]>(),
 
-  // 🔧 Merge multiple writes to analysis
   analysis: Annotation<any[]>({
-    reducer: (left, right) => {
-      const l = left ?? [];
-      const r = right ?? [];
-      return [...l, ...r];
-    },
+    reducer: (l, r) => [...(l ?? []), ...(r ?? [])],
     default: () => [],
   }),
 
-  // (optional) same idea for optimizations
   optimizations: Annotation<any[]>({
-    reducer: (left, right) => {
-      const l = left ?? [];
-      const r = right ?? [];
-      return [...l, ...r];
-    },
+    reducer: (l, r) => [...(l ?? []), ...(r ?? [])],
     default: () => [],
   }),
 
@@ -36,3 +31,5 @@ export interface FinOpsState {
   insights: Annotation<string>(),
   response: Annotation<string>(),
 });
+
+export type FinOpsState = typeof FinOpsStateAnnotation.State;
