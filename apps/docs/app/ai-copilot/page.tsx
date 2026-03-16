@@ -21,23 +21,7 @@ export default function AICopilotPage() {
 
   const activeChat = sessions.find((s) => s.id === activeSession);
 
-  const generateAIResponse = (text: string) => {
-
-    const input = text.toLowerCase();
-
-    if (input.includes("waste"))
-      return "You are currently wasting $2,100 per month on idle resources.";
-
-    if (input.includes("optimize"))
-      return "I found 3 optimization opportunities that could save $480/mo.";
-
-    if (input.includes("report"))
-      return "Your weekly cloud cost increased by 12% due to database scaling.";
-
-    return "I can analyze cloud costs, detect idle resources, and recommend optimizations.";
-  };
-
-  const sendMessage = (text: string) => {
+  const sendMessage = async (text: string) => {
 
     let sessionId = activeSession;
 
@@ -50,12 +34,36 @@ export default function AICopilotPage() {
       content: text
     });
 
-    addMessage(sessionId, {
-      role: "assistant",
-      content: generateAIResponse(text)
-    });
+    try {
 
-    updateTitle(sessionId, text.slice(0, 30));
+      const res = await fetch("/api/copilot/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: text
+        })
+      });
+
+      const data = await res.json();
+
+      addMessage(sessionId, {
+        role: "assistant",
+        content: data.reply
+      });
+
+      updateTitle(sessionId, text.slice(0, 30));
+
+    } catch {
+
+      addMessage(sessionId, {
+        role: "assistant",
+        content: "AI service unavailable."
+      });
+
+    }
+
   };
 
   return (
@@ -73,13 +81,21 @@ export default function AICopilotPage() {
 
         <CopilotHeader />
 
-        <div className="flex-1 overflow-y-auto p-6">
+        {/* CHAT AREA */}
 
-          {activeChat?.messages.map((msg: any, i: number) => (
-            <ChatMessage key={i} {...msg} />
-          ))}
+        <div className="flex-1 overflow-y-auto px-10 py-8">
+
+          <div className="max-w-3xl mx-auto space-y-6">
+
+            {activeChat?.messages.map((msg: any, i: number) => (
+              <ChatMessage key={i} {...msg} />
+            ))}
+
+          </div>
 
         </div>
+
+        {/* INPUT */}
 
         <ChatInput sendMessage={sendMessage} />
 

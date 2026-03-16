@@ -6,16 +6,35 @@ import Sidebar from "../components/layout/Sidebar";
 import Navbar from "../components/layout/Navbar";
 import InfrastructureCard from "./components/InfrastructureCard";
 
-import { infrastructureResources } from "../mocks/infrastructureData";
+import { getInfrastructureResources } from "../lib/api/infrastructure";
+import { InfrastructureResource } from "../types/infrastructure";
 
 export default function InfrastructurePage() {
 
-  const [resources, setResources] = useState(infrastructureResources);
+  const [resources, setResources] = useState<InfrastructureResource[]>([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
 
-  
+  const [loading, setLoading] = useState(true);
+
+  // fetch resources from API
+  useEffect(() => {
+
+    async function loadResources() {
+
+      const data = await getInfrastructureResources();
+
+      setResources(data);
+      setLoading(false);
+
+    }
+
+    loadResources();
+
+  }, []);
+
+  // simulate metric updates
   useEffect(() => {
 
     const interval = setInterval(() => {
@@ -31,7 +50,7 @@ export default function InfrastructurePage() {
           return {
             ...r,
             cpu: Math.max(1, Math.min(100, r.cpu + cpuChange)),
-            memory: Math.max(1, Math.min(100, r.memory + memChange)),
+            memory: Math.max(1, Math.min(100, r.memory! + memChange)),
           };
 
         })
@@ -42,7 +61,6 @@ export default function InfrastructurePage() {
     return () => clearInterval(interval);
 
   }, []);
-
 
   const filteredResources = resources.filter((resource) => {
 
@@ -72,6 +90,10 @@ export default function InfrastructurePage() {
     0
   );
 
+  if (loading) {
+    return <div className="p-8">Loading infrastructure...</div>;
+  }
+
   return (
     <div className="flex h-screen bg-[#F8FAFC]">
 
@@ -83,7 +105,7 @@ export default function InfrastructurePage() {
 
         <main className="p-8 overflow-y-auto">
 
-        
+          {/* Header */}
           <div className="flex justify-between items-center mb-6">
 
             <div className="flex items-center gap-3">
@@ -113,11 +135,13 @@ export default function InfrastructurePage() {
 
           </div>
 
+          {/* Filters */}
           <div className="flex justify-between items-center mb-6">
 
             <div className="flex gap-4">
 
               <select
+                value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="border px-3 py-2 rounded-md text-sm"
               >
@@ -128,6 +152,7 @@ export default function InfrastructurePage() {
               </select>
 
               <select
+                value={typeFilter}
                 onChange={(e) => setTypeFilter(e.target.value)}
                 className="border px-3 py-2 rounded-md text-sm"
               >
@@ -157,7 +182,7 @@ export default function InfrastructurePage() {
 
           </div>
 
-        
+          {/* Cards */}
           <div className="grid grid-cols-3 gap-6">
 
             {filteredResources.map((resource) => (

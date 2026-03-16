@@ -15,14 +15,23 @@ export default function ChatInput({ sendMessage }: any) {
 
   };
 
+  const handleKey = (e: any) => {
+
+    if (e.key === "Enter") {
+      submit();
+    }
+
+  };
+
   return (
     <div className="border-t p-4 bg-white">
 
-      <div className="flex gap-3 bg-slate-100 rounded-full px-4 py-2">
+      <div className="flex gap-3 bg-slate-100 rounded-full px-4 py-2 max-w-3xl mx-auto">
 
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKey}
           placeholder="Ask Gradient AI about your cloud costs..."
           className="flex-1 bg-transparent outline-none text-sm"
         />

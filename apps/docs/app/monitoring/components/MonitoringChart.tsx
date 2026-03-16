@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   LineChart,
   Line,
@@ -9,42 +9,30 @@ import {
   Tooltip
 } from "recharts";
 
-const data24h = [
-  { time: "00:00", events: 20 },
-  { time: "04:00", events: 40 },
-  { time: "08:00", events: 80 },
-  { time: "12:00", events: 20 },
-  { time: "16:00", events: 70 },
-  { time: "20:00", events: 35 },
-  { time: "23:59", events: 90 },
-];
-
-const data7d = [
-  { time: "Mon", events: 120 },
-  { time: "Tue", events: 95 },
-  { time: "Wed", events: 160 },
-  { time: "Thu", events: 140 },
-  { time: "Fri", events: 200 },
-  { time: "Sat", events: 180 },
-  { time: "Sun", events: 210 },
-];
-
-const data30d = [
-  { time: "W1", events: 400 },
-  { time: "W2", events: 500 },
-  { time: "W3", events: 350 },
-  { time: "W4", events: 600 },
-];
+import { getEventFrequency } from "../../lib/api/events";
 
 export default function MonitoringChart() {
 
   const [range, setRange] = useState("24h");
+  const [data, setData] = useState<any[]>([]);
+  const [totalEvents, setTotalEvents] = useState(0);
+  const [growth, setGrowth] = useState(0);
 
-  const getData = () => {
-    if (range === "7d") return data7d;
-    if (range === "30d") return data30d;
-    return data24h;
-  };
+  useEffect(() => {
+
+    async function loadData() {
+
+      const res = await getEventFrequency(range);
+
+      setData(res.data);
+      setTotalEvents(res.totalEvents);
+      setGrowth(res.growth);
+
+    }
+
+    loadData();
+
+  }, [range]);
 
   return (
     <div className="bg-white border border-[#E2E8F0] rounded-xl p-6">
@@ -57,9 +45,9 @@ export default function MonitoringChart() {
           </p>
 
           <h2 className="text-2xl font-semibold">
-            124 events
+            {totalEvents} events
             <span className="text-green-500 text-sm ml-2">
-              +12%
+              +{growth}%
             </span>
           </h2>
         </div>
@@ -87,7 +75,7 @@ export default function MonitoringChart() {
       </div>
 
       <ResponsiveContainer width="100%" height={150}>
-        <LineChart data={getData()}>
+        <LineChart data={data}>
           <XAxis dataKey="time" />
           <Tooltip />
           <Line

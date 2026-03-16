@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import EventFilters from "./EventFilters";
 import EventItem from "./EventItem";
 
+import { getEvents } from "../../lib/api/events";
+
 type Event = {
   id: number;
   type: string;
@@ -13,42 +15,37 @@ type Event = {
   time: string;
 };
 
-const initialEvents: Event[] = [
-  {
-    id: 1,
-    type: "AI ACTION",
-    title: "Droplet worker-1 shut down by AI Copilot",
-    savings: "$20/mo",
-    time: "2 minutes ago",
-  },
-  {
-    id: 2,
-    type: "INFRASTRUCTURE",
-    title: "Scaling event: db-main capacity increased",
-    description: "Horizontal scaling triggered by CPU threshold (85%)",
-    time: "1 hour ago",
-  },
-  {
-    id: 3,
-    type: "COST MANAGEMENT",
-    title: "Snapshot old-backup-2023 deleted",
-    savings: "$5/mo",
-    time: "3 hours ago",
-  },
-];
-
 export default function EventTimeline() {
 
-  const [events, setEvents] = useState<Event[]>(initialEvents);
-
+  const [events, setEvents] = useState<Event[]>([]);
   const [filters, setFilters] = useState({
     type: "",
     search: "",
   });
 
+  const [loading, setLoading] = useState(true);
+
+  /* FETCH EVENTS */
+
+  useEffect(() => {
+
+    async function loadEvents() {
+
+      const data = await getEvents();
+
+      setEvents(data);
+      setLoading(false);
+
+    }
+
+    loadEvents();
+
+  }, []);
+
   /* LIVE EVENT SIMULATION */
 
   useEffect(() => {
+
     const interval = setInterval(() => {
 
       const newEvent: Event = {
@@ -64,6 +61,7 @@ export default function EventTimeline() {
     }, 20000);
 
     return () => clearInterval(interval);
+
   }, []);
 
   /* FILTER LOGIC */
@@ -80,18 +78,21 @@ export default function EventTimeline() {
       return false;
 
     return true;
+
   });
+
+  if (loading) {
+    return <p className="text-sm text-gray-400">Loading events...</p>;
+  }
 
   return (
     <div className="mt-6">
 
-      {/* FILTER BAR */}
       <EventFilters
         filters={filters}
         setFilters={setFilters}
       />
 
-      {/* EVENT LIST */}
       <div className="space-y-4 mt-6">
 
         {filteredEvents.length === 0 && (

@@ -1,4 +1,27 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { getOptimizationStats } from "../../lib/api/optimizations";
+
 export default function OptimizationStats() {
+
+  const [stats, setStats] = useState<any>(null);
+
+  useEffect(() => {
+
+    async function load() {
+
+      const res = await getOptimizationStats();
+      setStats(res);
+
+    }
+
+    load();
+
+  }, []);
+
+  if (!stats) return null;
+
   return (
     <div className="grid grid-cols-3 gap-6">
 
@@ -7,7 +30,7 @@ export default function OptimizationStats() {
           Total Resources Analyzed
         </p>
         <h2 className="text-xl font-semibold mt-2">
-          1,248
+          {stats.resourcesAnalyzed}
         </h2>
       </div>
 
@@ -16,7 +39,7 @@ export default function OptimizationStats() {
           Optimizations Applied (MTD)
         </p>
         <h2 className="text-xl font-semibold mt-2">
-          42
+          {stats.optimizationsApplied}
         </h2>
       </div>
 
@@ -25,7 +48,7 @@ export default function OptimizationStats() {
           Total Savings (YTD)
         </p>
         <h2 className="text-xl font-semibold text-[#0069FF] mt-2">
-          $28,490.50
+          ${stats.yearlySavings}
         </h2>
       </div>
 

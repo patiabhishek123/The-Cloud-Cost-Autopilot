@@ -1,4 +1,22 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { getSavingsForecast } from "../lib/api/dashboard";
+
 export default function SavingsForecast() {
+
+  const [data, setData] = useState<any>(null);
+
+  useEffect(() => {
+    async function load() {
+      const res = await getSavingsForecast();
+      setData(res);
+    }
+    load();
+  }, []);
+
+  if (!data) return null;
+
   return (
     <div className="bg-white border border-[#E2E8F0] rounded-xl p-6">
 
@@ -15,8 +33,8 @@ export default function SavingsForecast() {
       </div>
 
       <div className="flex justify-between text-xs text-[#64748B] mt-3">
-        <span>$14.2k</span>
-        <span>$11.7k</span>
+        <span>${data.currentCost}</span>
+        <span>${data.optimizedCost}</span>
       </div>
 
     </div>

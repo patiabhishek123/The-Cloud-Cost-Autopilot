@@ -3,14 +3,14 @@ export default function ChatMessage({ role, content }: any) {
   const isUser = role === "user";
 
   return (
-    <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-4`}>
+    <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
 
       <div
-        className={`max-w-md px-4 py-3 rounded-xl text-sm
+        className={`max-w-md px-4 py-3 rounded-xl text-sm shadow-sm
         ${
           isUser
-            ? "bg-gray-100"
-            : "bg-white border border-gray-200"
+            ? "bg-slate-200"
+            : "bg-white border border-[#E2E8F0]"
         }`}
       >
         {content}

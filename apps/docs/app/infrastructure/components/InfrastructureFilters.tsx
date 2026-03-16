@@ -1,11 +1,24 @@
 "use client";
 
-import { useState } from "react";
+type Props = {
+  statusFilter: string;
+  typeFilter: string;
+  setStatusFilter: (v: string) => void;
+  setTypeFilter: (v: string) => void;
+  healthyCount: number;
+  idleCount: number;
+  totalMonthly: number;
+};
 
-export default function InfrastructureFilters() {
-
-  const [status, setStatus] = useState("All");
-  const [type, setType] = useState("All");
+export default function InfrastructureFilters({
+  statusFilter,
+  typeFilter,
+  setStatusFilter,
+  setTypeFilter,
+  healthyCount,
+  idleCount,
+  totalMonthly,
+}: Props) {
 
   return (
     <div className="flex items-center justify-between mb-6">
@@ -13,42 +26,41 @@ export default function InfrastructureFilters() {
       <div className="flex gap-4">
 
         <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
           className="border border-[#E2E8F0] px-3 py-2 rounded-md text-sm bg-white"
         >
-          <option>All</option>
-          <option>Running</option>
-          <option>Idle</option>
-          <option>Healthy</option>
+          <option value="all">Status: All</option>
+          <option value="running">Running</option>
+          <option value="healthy">Healthy</option>
+          <option value="active">Active</option>
         </select>
 
         <select
-          value={type}
-          onChange={(e) => setType(e.target.value)}
+          value={typeFilter}
+          onChange={(e) => setTypeFilter(e.target.value)}
           className="border border-[#E2E8F0] px-3 py-2 rounded-md text-sm bg-white"
         >
-          <option>All</option>
-          <option>Server</option>
-          <option>Database</option>
-          <option>Load Balancer</option>
+          <option value="all">Resource Type: All</option>
+          <option value="server">Server</option>
+          <option value="database">Database</option>
+          <option value="loadbalancer">Load Balancer</option>
         </select>
 
       </div>
 
-
       <div className="text-sm text-slate-500 flex gap-4">
 
-        <span>
-          🟢 24 Healthy
+        <span className="text-green-600">
+          ● {healthyCount} Healthy
         </span>
 
-        <span>
-          🟡 2 Idle
+        <span className="text-yellow-500">
+          ● {idleCount} Idle
         </span>
 
         <span className="font-medium text-slate-700">
-          Total Monthly: $2,482
+          Total Monthly: ${totalMonthly}
         </span>
 
       </div>

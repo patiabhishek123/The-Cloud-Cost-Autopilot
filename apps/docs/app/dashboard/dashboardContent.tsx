@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import StatCard from "./StatCard";
 import CostChart from "./CostChart";
 import InfraStatus from "./InfraStatus";
@@ -7,37 +9,52 @@ import CostSources from "./CostSources";
 import AIRecommendations from "./AIRecommendations";
 import SavingsForecast from "./SavingsForecast";
 
+import { getDashboardStats } from "../lib/api/dashboard";
+
 export default function DashboardContent() {
+  const [stats, setStats] = useState<any>(null);
+
+  useEffect(() => {
+    async function loadStats() {
+      const data = await getDashboardStats();
+      setStats(data);
+    }
+
+    loadStats();
+  }, []);
+
+  if (!stats) return <div className="p-8">Loading...</div>;
+
   return (
     <div className="p-8 space-y-6">
 
-      
+      {/* STAT CARDS */}
       <div className="grid grid-cols-4 gap-6">
 
         <StatCard
           title="Total Monthly Cost"
-          value="$14,200"
+          value={`$${stats.totalCost}`}
           growth="+2.4%"
           color="#1E5EFF"
         />
 
         <StatCard
           title="Potential Savings"
-          value="$2,450"
+          value={`$${stats.potentialSavings}`}
           growth="+15.2%"
           color="#16A34A"
         />
 
         <StatCard
           title="Idle Resources"
-          value="12"
+          value={stats.idleResources}
           growth="Last 24h"
           color="#F97316"
         />
 
         <StatCard
           title="Optimizations"
-          value="8"
+          value={stats.optimizations}
           growth="8 Actionable"
           color="#9333EA"
         />

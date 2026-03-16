@@ -1,10 +1,15 @@
 "use client";
 
 import { Server, Database, Network } from "lucide-react";
+import { InfrastructureResource } from "../../types/infrastructure";
 
-export default function InfrastructureCard({ data }: any) {
+type Props = {
+  data: InfrastructureResource;
+};
 
-  const iconMap: any = {
+export default function InfrastructureCard({ data }: Props) {
+
+  const iconMap = {
     server: <Server size={18} color="#2563EB" />,
     database: <Database size={18} color="#7C3AED" />,
     loadbalancer: <Network size={18} color="#0EA5E9" />,
@@ -51,8 +56,6 @@ export default function InfrastructureCard({ data }: any) {
 
       </div>
 
-
-      
       {data.cpu !== undefined && (
         <div className="grid grid-cols-2 gap-4 mt-3">
 
@@ -97,7 +100,6 @@ export default function InfrastructureCard({ data }: any) {
         </div>
       )}
 
-
       {data.connections && (
         <div className="mt-4">
 
@@ -111,7 +113,6 @@ export default function InfrastructureCard({ data }: any) {
 
         </div>
       )}
-
 
       <div className="flex justify-between items-center mt-4 text-sm">
 

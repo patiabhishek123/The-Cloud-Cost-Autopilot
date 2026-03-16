@@ -1,4 +1,17 @@
-export default function InfrastructureHeader() {
+"use client";
+
+type Props = {
+  search: string;
+  setSearch: (value: string) => void;
+  onCreateResource: () => void;
+};
+
+export default function InfrastructureHeader({
+  search,
+  setSearch,
+  onCreateResource,
+}: Props) {
+
   return (
     <div className="flex items-center justify-between mb-6">
 
@@ -15,11 +28,16 @@ export default function InfrastructureHeader() {
       <div className="flex items-center gap-4">
 
         <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
           placeholder="Search resources..."
           className="bg-slate-100 px-3 py-2 rounded-md text-sm w-[220px]"
         />
 
-        <button className="bg-[#0069FF] text-white px-4 py-2 rounded-lg text-sm">
+        <button
+          onClick={onCreateResource}
+          className="bg-[#0069FF] text-white px-4 py-2 rounded-lg text-sm"
+        >
           + New Resource
         </button>
 

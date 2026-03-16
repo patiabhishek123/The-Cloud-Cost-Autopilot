@@ -1,6 +1,20 @@
-import { costSources } from "../mocks/dashboardData";
+"use client";
+
+import { useEffect, useState } from "react";
+import { getCostSources } from "../lib/api/dashboard";
 
 export default function CostSources() {
+
+  const [sources, setSources] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function load() {
+      const data = await getCostSources();
+      setSources(data);
+    }
+    load();
+  }, []);
+
   return (
     <div className="bg-white border border-[#E2E8F0] rounded-xl p-6">
 
@@ -16,23 +30,16 @@ export default function CostSources() {
 
       <div className="space-y-3">
 
-        {costSources.map((item, index) => (
-          <div
-            key={index}
-            className="flex justify-between text-sm"
-          >
-            <span className="text-[#334155]">
-              {item.name}
-            </span>
-
+        {sources.map((item, index) => (
+          <div key={index} className="flex justify-between text-sm">
+            <span className="text-[#334155]">{item.name}</span>
             <span className="font-medium text-[#0F172A]">
-              {item.cost}
+              ${item.cost}
             </span>
           </div>
         ))}
 
       </div>
-
     </div>
   );
 }
